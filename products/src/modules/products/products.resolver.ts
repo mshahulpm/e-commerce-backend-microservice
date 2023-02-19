@@ -6,7 +6,7 @@ import { UpdateProductInput } from './dto/update-product.input';
 
 @Resolver(() => Product)
 export class ProductsResolver {
-  constructor(private readonly productsService: ProductsService) {}
+  constructor(private readonly productsService: ProductsService) { }
 
   @Mutation(() => Product)
   createProduct(@Args('createProductInput') createProductInput: CreateProductInput) {
@@ -19,7 +19,7 @@ export class ProductsResolver {
   }
 
   @Query(() => Product, { name: 'product' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  findOne(@Args('id', { type: () => String }) id: string) {
     return this.productsService.findOne(id);
   }
 

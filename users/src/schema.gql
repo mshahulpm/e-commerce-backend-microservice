@@ -3,28 +3,83 @@
 # ------------------------------------------------------
 
 type User {
+  id: String!
+  banned: Boolean
+  name: String!
+  email: String!
+  phone: String!
+  roles: [Roles!]!
+}
+
+enum Roles {
+  super_admin
+  admin
+  user
+}
+
+type Auth {
   """Example field (placeholder)"""
   exampleField: Int!
 }
 
+type LoginUser {
+  name: String!
+  email: String!
+  phone: String!
+  roles: [Roles!]!
+}
+
+type LoginResponse {
+  message: String!
+  token: String!
+  user: LoginUser!
+}
+
 type Query {
+  auth(id: Int!): Auth!
   users: [User!]!
   user(id: Int!): User!
 }
 
 type Mutation {
-  createUser(createUserInput: CreateUserInput!): User!
+  login(login: LoginInput!): LoginResponse!
+  updateAuth(updateAuthInput: UpdateAuthInput!): Auth!
+  removeAuth(id: Int!): Auth!
+  createUser(createUserInput: CreateUserInput!): User
   updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser(id: Int!): User!
 }
 
+input LoginInput {
+  """email or phone """
+  username: String!
+
+  """Password"""
+  password: String!
+}
+
+input UpdateAuthInput {
+  """email or phone """
+  username: String
+
+  """Password"""
+  password: String
+  id: Int!
+}
+
 input CreateUserInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  name: String!
+  email: String!
+  phone: String!
+  password: String!
+  roles: [Roles!]!
 }
 
 input UpdateUserInput {
-  """Example field (placeholder)"""
-  exampleField: Int
+  name: String
+  email: String
+  phone: String
+  password: String
+  roles: [Roles!]
   id: Int!
 }

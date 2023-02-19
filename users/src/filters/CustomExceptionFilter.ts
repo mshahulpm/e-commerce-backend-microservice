@@ -6,10 +6,11 @@ import {
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 import { BaseExceptionFilter } from '@nestjs/core';
+import { GqlArgumentsHost, GqlExceptionFilter } from '@nestjs/graphql';
 import { Prisma } from '@prisma/client';
 
 @Catch()
-export class AllExceptionsFilter implements ExceptionFilter {
+export class AllExceptionsFilter implements GqlExceptionFilter {
 
     baseException: BaseExceptionFilter;
 
@@ -21,7 +22,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
         // In certain situations `httpAdapter` might not be available in the
         // constructor method, thus we should resolve it here.
-
+        const gqlHost = GqlArgumentsHost.create(host)
         const { httpAdapter } = this.httpAdapterHost;
 
 

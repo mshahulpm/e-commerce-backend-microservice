@@ -28,7 +28,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe(
     {
       transform: true,
-      whitelist: true,
+      // whitelist: true,
       transformOptions: {
         enableImplicitConversion: true
       }
@@ -36,8 +36,8 @@ async function bootstrap() {
   )
 
   // Global exception error handling 
-  const host = app.get(HttpAdapterHost);
-  app.useGlobalFilters(new AllExceptionsFilter(host))
+  // const host = app.get(HttpAdapterHost);
+  // app.useGlobalFilters(new AllExceptionsFilter(host))
 
 
   await app.startAllMicroservices()

@@ -11,30 +11,39 @@ datasource db {
 }
 
 model category {
-  id         String    @id @default(uuid())
-  name       String
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  products   product[]
-  productsId String?
+  id               String             @id @default(uuid())
+  name             String
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  product_category product_category[]
 }
 
 model product {
-  id         String     @id @default(uuid())
-  name       String
-  descripton String?
-  price      Float?
-  discount   Float?
-  sku        String?    @unique
-  stock      Int        @default(0)
-  thumbnail  String?
-  categories category[]
-  images     String[]   @default([])
-  disabeled  Boolean?
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  price       Float?
+  discount    Float?
+  sku         String?  @unique
+  stock       Int      @default(0)
+  thumbnail   String?
+  images      String[] @default([])
+  disabled    Boolean?
 
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-  cart_item cart_item[]
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  cart_item        cart_item[]
+  product_category product_category[]
+}
+
+model product_category {
+  id          String   @id @default(uuid())
+  category    category @relation(fields: [category_id], references: [id])
+  product     product  @relation(fields: [product_id], references: [id])
+  category_id String
+  product_id  String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model cart {

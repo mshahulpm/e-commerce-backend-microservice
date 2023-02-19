@@ -2,14 +2,36 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Category {
+  name: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type Product {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  id: String!
+  name: String!
+  description: String
+  price: Float
+  discount: Float
+  sku: String
+  stock: Int
+  thumbnail: String
+  categories: Category
+  images: [String!]
+  disabled: Boolean
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 type Query {
   products: [Product!]!
-  product(id: Int!): Product!
+  product(id: String!): Product!
 }
 
 type Mutation {
@@ -19,12 +41,28 @@ type Mutation {
 }
 
 input CreateProductInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  name: String!
+  description: String
+  price: Float
+  discount: Float
+  sku: String
+  stock: Int
+  thumbnail: String
+  categories: String
+  images: [String!]
+  disabled: Boolean
 }
 
 input UpdateProductInput {
-  """Example field (placeholder)"""
-  exampleField: Int
+  name: String
+  description: String
+  price: Float
+  discount: Float
+  sku: String
+  stock: Int
+  thumbnail: String
+  categories: String
+  images: [String!]
+  disabled: Boolean
   id: Int!
 }

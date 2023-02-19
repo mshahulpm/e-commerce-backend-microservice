@@ -7,9 +7,11 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { OrderModule } from './modules/order/order.module';
 import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
+import { GlobalModule } from './global.module';
 
 @Module({
   imports: [
+    GlobalModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
