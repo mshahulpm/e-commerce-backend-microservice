@@ -1,0 +1,57 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model category {
+  id         String    @id @default(uuid())
+  name       String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  products   product[]
+  productsId String?
+}
+
+model product {
+  id         String     @id @default(uuid())
+  name       String
+  descripton String?
+  price      Float?
+  discount   Float?
+  sku        String?    @unique
+  stock      Int        @default(0)
+  thumbnail  String?
+  categories category[]
+  images     String[]   @default([])
+  disabeled  Boolean?
+
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  cart_item cart_item[]
+}
+
+model cart {
+  id        String      @id @default(uuid())
+  user_id   String      @unique
+  cartItems cart_item[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model cart_item {
+  id        String   @id @default(uuid())
+  cartId    String?
+  productId String?
+  quantity  Int
+  product   product? @relation(fields: [productId], references: [id])
+  cart      cart?    @relation(fields: [cartId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

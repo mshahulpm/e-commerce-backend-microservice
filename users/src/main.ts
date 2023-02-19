@@ -5,7 +5,7 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './filters/CustomExceptionFilter';
 
-const PORT = process.env.PORT || 7001;
+const PORT = process.env.PORT || 7003;
 
 async function bootstrap() {
 
@@ -18,7 +18,7 @@ async function bootstrap() {
   //   transport: Transport.RMQ,
   //   options: {
   //     urls: [process.env.RABITMQ_URL] as string[],
-  //     queue: 'order_queue',
+  //     queue: 'user_queue',
   //     queueOptions: {
   //       durable: true
   //     }

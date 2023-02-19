@@ -1,8 +1,49 @@
-import { NestFactory } from '@nestjs/core';
+import 'dotenv/config'
+import { ValidationPipe } from '@nestjs/common';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { AppModule } from './app.module';
+import { AllExceptionsFilter } from './filters/CustomExceptionFilter';
+
+const PORT = process.env.PORT || 7002;
 
 async function bootstrap() {
+
   const app = await NestFactory.create(AppModule);
-  await app.listen(3000);
+
+  // cors enable 
+  app.enableCors()
+
+  // app.connectMicroservice<MicroserviceOptions>({
+  //   transport: Transport.RMQ,
+  //   options: {
+  //     urls: [process.env.RABITMQ_URL] as string[],
+  //     queue: 'product_queue',
+  //     queueOptions: {
+  //       durable: true
+  //     }
+  //   }
+  // })
+
+  app.useGlobalPipes(new ValidationPipe(
+    {
+      transform: true,
+      whitelist: true,
+      transformOptions: {
+        enableImplicitConversion: true
+      }
+    })
+  )
+
+  // Global exception error handling 
+  const host = app.get(HttpAdapterHost);
+  app.useGlobalFilters(new AllExceptionsFilter(host))
+
+
+  await app.startAllMicroservices()
+
+  await app.listen(PORT);
+  console.log('Residents service is running on port 8020');
+
 }
 bootstrap();
