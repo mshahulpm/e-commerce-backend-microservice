@@ -43,7 +43,7 @@ async function bootstrap() {
   await app.startAllMicroservices()
 
   await app.listen(PORT);
-  console.log('Residents service is running on port 8020');
+  console.log('Order service is running on port ' + PORT);
 
 }
 bootstrap();
