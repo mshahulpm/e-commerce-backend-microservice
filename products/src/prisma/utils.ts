@@ -50,7 +50,7 @@ export async function prismaPaginate<T, T2>({
         ...rest,
         ...restOfArgs,
         orderBy: {
-            created_at: 'desc',
+            createdAt: 'desc',
             ...orderBy
         },
         where

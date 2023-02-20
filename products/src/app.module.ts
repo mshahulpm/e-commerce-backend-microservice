@@ -18,7 +18,7 @@ import { GlobalModule } from './global.module';
       playground: false,
       plugins: [ApolloServerPluginLandingPageLocalDefault()]
     }),
-    ProductsModule
+    ProductsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

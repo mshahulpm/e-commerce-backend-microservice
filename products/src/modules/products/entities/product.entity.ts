@@ -1,4 +1,5 @@
 import { ObjectType, Field, Int, Float, GraphQLISODateTime, } from '@nestjs/graphql';
+import { PaginatedResult } from 'src/entity/common';
 import { Category } from './category';
 
 @ObjectType()
@@ -27,7 +28,7 @@ export class Product {
   @Field(() => String, { nullable: true })
   thumbnail?: string
 
-  @Field(() => Category, { nullable: true })
+  @Field(() => [Category], { nullable: true })
   categories?: Category[]
 
   @Field(() => [String], { nullable: true })
@@ -41,4 +42,12 @@ export class Product {
 
   @Field(() => GraphQLISODateTime)
   updatedAt: Date
+}
+
+
+@ObjectType()
+export class PaginatedProduct extends PaginatedResult {
+
+  @Field(() => [Product])
+  docs: Product[]
 }

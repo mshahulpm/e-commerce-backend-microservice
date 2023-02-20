@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import { category, Prisma, product } from '@prisma/client';
+import { Pagination } from 'src/dto/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateProductInput } from './dto/create-product.input';
-import { UpdateProductInput } from './dto/update-product.input';
+import { prismaPaginate } from 'src/prisma/utils';
+import { CreateCategoryInput, CreateProductInput } from './dto/create-product.input';
+import { UpdateCategoryInput, UpdateProductInput } from './dto/update-product.input';
 
 @Injectable()
 export class ProductsService {
@@ -23,8 +26,26 @@ export class ProductsService {
     })
   }
 
-  findAll() {
-    return `This action returns all products`;
+  async findAll(query: Pagination) {
+
+    const allProducts = await prismaPaginate<Prisma.productFindManyArgs, product>({
+      model: this.prisma.product,
+      query,
+      searchFields: ['name', 'sku'],
+      args: {
+        include: {
+          product_category: {
+            include: {
+              category: true
+            }
+          }
+        }
+      }
+    })
+
+    console.log(allProducts.docs[0])
+
+    return allProducts
   }
 
   async findOne(id: string) {
@@ -45,11 +66,39 @@ export class ProductsService {
 
   }
 
-  update(id: number, updateProductInput: UpdateProductInput) {
-    return `This action updates a #${id} product`;
+  update(updateProductInput: UpdateProductInput) {
+    return `This action updates a  product`;
   }
 
   remove(id: number) {
     return `This action removes a #${id} product`;
   }
+
+
+  // ================== Category ===================== 
+
+  async createCategory(data: CreateCategoryInput) {
+    return this.prisma.category.create({ data })
+  }
+
+  async updateCategory({ id, ...data }: UpdateCategoryInput) {
+    return this.prisma.category.update({
+      where: { id },
+      data
+    })
+  }
+
+  async findAllCategories(query: Pagination) {
+
+    const allCategories = await prismaPaginate<Prisma.categoryFindManyArgs, category>({
+      model: this.prisma.category,
+      query,
+      searchFields: ['name'],
+    })
+
+    return allCategories
+
+  }
+
+
 }

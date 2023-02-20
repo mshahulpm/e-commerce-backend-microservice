@@ -35,7 +35,7 @@ export class CreateProductInput {
 
   @IsUUID(undefined, { each: true })
   @IsOptional()
-  @Field(() => String, { nullable: true })
+  @Field(() => [String], { nullable: true })
   categories?: string[]
 
   @Field(() => [String], { nullable: true })
@@ -44,4 +44,11 @@ export class CreateProductInput {
   @Field(() => Boolean, { nullable: true })
   disabled?: boolean
 
+}
+
+
+@InputType()
+export class CreateCategoryInput {
+  @Field(() => String)
+  name: string
 }
