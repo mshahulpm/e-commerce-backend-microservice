@@ -1,34 +1,50 @@
 import 'dotenv/config'
-import { ApolloGateway } from '@apollo/gateway';
+import { ApolloGateway, IntrospectAndCompose, RemoteGraphQLDataSource } from '@apollo/gateway';
 import { ApolloServer } from 'apollo-server-express';
 import express from 'express'
-const app = express()
+import cors from 'cors'
 
-const PORT = 4000;
+const app = express()
+app.use(cors())
+
+const PORT = 7000;
 
 
 async function bootstrap() {
     const gateway = new ApolloGateway({
-        serviceList: [
-            { name: 'order', url: process.env.ORDER_SERVICE },
-            { name: 'product', url: process.env.PRODUCT_SERVICE },
-            { name: 'user', url: process.env.USER_SERVICE },
-        ],
+        supergraphSdl: new IntrospectAndCompose({
+            subgraphs: [
+                { name: 'order', url: process.env.ORDER_SERVICE },
+                { name: 'product', url: process.env.PRODUCT_SERVICE },
+                { name: 'user', url: process.env.USER_SERVICE },
+            ]
+        }),
+        buildService: function ({ url }) {
+            return new RemoteGraphQLDataSource({
+                url,
+                willSendRequest: function ({ request, context }) {
+                    for (const [headerKey, headerValue] of Object.entries(context.headers || {})) {
+                        request.http?.headers.set(headerKey, headerValue);
+                    }
+                }
+            });
+        }
     });
 
     const server = new ApolloServer({
         gateway,
         subscriptions: false,
-        rootValue: '/graphql'
+        rootValue: '/graphql',
     });
 
     await server.start()
 
-    server.applyMiddleware({ app })
-
     app.get('/', (req, res) => {
         res.json({ message: 'Welcome to gateway' })
     })
+
+    server.applyMiddleware({ app })
+
 
     app.listen(PORT, () => {
         console.log('Gateway is running on port ' + PORT)
