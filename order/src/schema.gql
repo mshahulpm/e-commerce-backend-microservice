@@ -8,7 +8,7 @@ type Order {
 }
 
 type Query {
-  order(id: Int!): String!
+  order(id: Int!): Order!
 }
 
 type Mutation {

@@ -13,7 +13,7 @@ export class OrderService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} order`;
+    return { exampleField: id }
   }
 
   update(id: number, updateOrderInput: UpdateOrderInput) {

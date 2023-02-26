@@ -1,7 +1,6 @@
-import { ApolloDriver } from '@nestjs/apollo';
-import { ApolloDriverConfig } from '@nestjs/apollo/dist/interfaces';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloFederationDriverConfig, ApolloFederationDriver } from '@nestjs/apollo'
 import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -12,9 +11,12 @@ import { GlobalModule } from './global.module';
 @Module({
   imports: [
     GlobalModule,
-    GraphQLModule.forRoot<ApolloDriverConfig>({
-      driver: ApolloDriver,
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+    GraphQLModule.forRoot<ApolloFederationDriverConfig>({
+      driver: ApolloFederationDriver,
+      autoSchemaFile: {
+        federation: 2,
+        path: join(process.cwd(), 'src/schema.gql')
+      },
       playground: false,
       plugins: [ApolloServerPluginLandingPageLocalDefault()]
     }),
