@@ -1,14 +1,22 @@
 import { Global, Module } from "@nestjs/common/decorators";
 import { PrismaService } from "./prisma/prisma.service";
-import { JwtModule, JwtService } from '@nestjs/jwt'
+import { JwtModule } from '@nestjs/jwt'
 
 
 @Global()
 @Module({
     imports: [
-        JwtModule.register({}),
+        JwtModule.register({
+            secret: process.env.JWT_SECRET,
+            verifyOptions: {
+                ignoreExpiration: false
+            },
+            signOptions: {
+                expiresIn: '7d'
+            }
+        }),
     ],
-    providers: [PrismaService, JwtService],
-    exports: [PrismaService, JwtService]
+    providers: [PrismaService],
+    exports: [JwtModule, PrismaService]
 })
 export class GlobalModule { }

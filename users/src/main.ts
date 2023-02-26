@@ -36,8 +36,7 @@ async function bootstrap() {
   )
 
   // Global exception error handling 
-  // const host = app.get(HttpAdapterHost);
-  // app.useGlobalFilters(new AllExceptionsFilter(host))
+  app.useGlobalFilters(new AllExceptionsFilter())
 
 
   await app.startAllMicroservices()

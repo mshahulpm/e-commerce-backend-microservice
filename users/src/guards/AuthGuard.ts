@@ -1,13 +1,16 @@
 import {
     CanActivate,
+    createParamDecorator,
     ExecutionContext,
     ForbiddenException,
     Injectable,
     UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { AuthGuardPermissionMetadataKey, IAuthPermissions } from 'src/guards/AuthGuardpermission';
+import { AuthGuardPermissionKey, AuthPermissions } from 'src/guards/AuthGuardpermission';
 import { JwtService } from "@nestjs/jwt";
+import { GqlExecutionContext } from '@nestjs/graphql';
+import { roles } from '@prisma/client';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -18,16 +21,19 @@ export class AuthGuard implements CanActivate {
     ) { }
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
-        const request = context.switchToHttp().getRequest();
-        const authGuardPermissions = this.reflector.get<IAuthPermissions>(
-            AuthGuardPermissionMetadataKey,
+
+        const ctx = GqlExecutionContext.create(context)
+        const { req } = ctx.getContext()
+
+        const authGuardPermissions = this.reflector.get<AuthPermissions>(
+            AuthGuardPermissionKey,
             context.getHandler(),
         );
 
-        // avoiding message queue requests
-        if (authGuardPermissions?.isMessagePattern) return true
+        // checking if the guard is disabled for a specific route 
+        if (authGuardPermissions?.disableGuard) return true
 
-        const token = request.headers.authorization?.split('Bearer ')[1];
+        const token = req.headers.authorization?.split(' ')[1]
 
         if (!token) {
             throw new UnauthorizedException('No Token found');
@@ -45,8 +51,7 @@ export class AuthGuard implements CanActivate {
             throw new UnauthorizedException();
         }
 
-
-        request.user = decodedToken;
+        req.user = decodedToken;
 
         if (authGuardPermissions?.allowedUsers?.length > 0) {
             let isRoleAllowed = false
@@ -55,6 +60,26 @@ export class AuthGuard implements CanActivate {
             })
             if (!isRoleAllowed) throw new ForbiddenException()
         }
+
         return true
     }
 }
+
+
+/**
+ *  Custom User Decorator to get user details 
+ */
+export type JWTDecodedUser = {
+    id: string,
+    roles: roles[],
+    name: string,
+    iat: number,
+    exp: number
+}
+export const GetUser = createParamDecorator(
+    (data: unknown, ctx: ExecutionContext) => {
+        const { req } = GqlExecutionContext.create(ctx).getContext()
+        return req.user as JWTDecodedUser
+    }
+
+);

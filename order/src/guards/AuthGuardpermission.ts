@@ -1,22 +1,22 @@
 
-enum roles {
-    super_admin = 'super_admin',
-    admin = 'admin',
-    user = 'user'
-}
 import { CustomDecorator, SetMetadata } from '@nestjs/common';
+export enum roles {
+    admin = 'admin',
+    super_admin = 'super_admin',
+    user = 'user',
+}
 
-export interface IAuthPermissions {
-    isMessagePattern?: boolean
+export interface AuthPermissions {
+    disableGuard?: boolean
     allowedUsers?: roles[]
 }
 
-export const AuthGuardPermissionMetadataKey = 'authPermissions';
+export const AuthGuardPermissionKey = 'authPermissions';
 
 export const AuthGuardPermissions = (
-    permissions?: IAuthPermissions,
+    permissions?: AuthPermissions,
 ): CustomDecorator<string> =>
-    SetMetadata(AuthGuardPermissionMetadataKey, {
-        isMessagePattern: permissions?.isMessagePattern,
+    SetMetadata(AuthGuardPermissionKey, {
+        isMessagePattern: permissions?.disableGuard,
         allowedUsers: permissions?.allowedUsers ?? [],
     });
