@@ -1,9 +1,10 @@
 import 'dotenv/config'
 import { ValidationPipe } from '@nestjs/common';
-import { HttpAdapterHost, NestFactory } from '@nestjs/core';
+import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './filters/CustomExceptionFilter';
+import { QUEUES } from './config'
 
 const PORT = process.env.PORT || 7001;
 
@@ -14,16 +15,16 @@ async function bootstrap() {
   // cors enable 
   app.enableCors()
 
-  // app.connectMicroservice<MicroserviceOptions>({
-  //   transport: Transport.RMQ,
-  //   options: {
-  //     urls: [process.env.RABITMQ_URL] as string[],
-  //     queue: 'order_queue',
-  //     queueOptions: {
-  //       durable: true
-  //     }
-  //   }
-  // })
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.RMQ,
+    options: {
+      urls: [process.env.AMQP_URL] as string[],
+      queue: QUEUES.ORDER,
+      queueOptions: {
+        durable: true
+      }
+    }
+  })
 
   app.useGlobalPipes(new ValidationPipe(
     {
