@@ -49,19 +49,8 @@ export class AuthService {
 
   }
 
-  findAll() {
-    return `This action returns all auth`;
+  async getAuthUser(id: string) {
+    return this.prisma.user.findUniqueOrThrow({ where: { id } })
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
-
-  update(id: number, updateAuthInput: UpdateAuthInput) {
-    return `This action updates a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
-  }
 }
