@@ -3,12 +3,14 @@ import express, { Express, NextFunction, Request, Response } from 'express';
 import { appInit } from './config/appInit';
 import { uploadImage } from './middleware/multer';
 import { productImageUploads } from './middleware/upload';
+import cors from 'cors'
 
 appInit()
 
 const app: Express = express();
 const port = process.env.PORT || 7005;
 
+app.use(cors())
 app.use(express.static('public'))
 
 app.get('/', (req: Request, res: Response) => {
