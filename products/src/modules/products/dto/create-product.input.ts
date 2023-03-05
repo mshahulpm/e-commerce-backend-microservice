@@ -21,7 +21,6 @@ export class CreateProductInput {
   discount?: number
 
   @IsOptional()
-  @IsHexadecimal()
   @Field(() => String, { nullable: true })
   sku?: string
 
